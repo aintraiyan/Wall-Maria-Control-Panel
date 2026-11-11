@@ -1,0 +1,533 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="WOFBD Wall Maria personal management control panel."
+  />
+
+  <meta name="theme-color" content="#0b0c0f" />
+
+  <title>Wall Maria — Control Panel</title>
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="./favicon.svg"
+  />
+
+  <link rel="stylesheet" href="./src/css/global.css" />
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">W</div>
+
+        <div class="brand-info">
+          <h1>Wall Maria</h1>
+          <span>Control Panel</span>
+        </div>
+      </div>
+
+      <div class="sidebar-label">MANAGEMENT</div>
+
+      <nav class="navigation" aria-label="Main navigation">
+        <button class="nav-item active" data-page="members">
+          <span class="nav-icon">♙</span>
+          <span>Main GC Members</span>
+        </button>
+
+        <button class="nav-item" data-page="higher">
+          <span class="nav-icon">♜</span>
+          <span>Higher Ranks</span>
+        </button>
+
+        <button class="nav-item" data-page="soldier">
+          <span class="nav-icon">♟</span>
+          <span>Soldier Ranks</span>
+        </button>
+
+        <button class="nav-item" data-page="texts">
+          <span class="nav-icon">▤</span>
+          <span>Copy-Paste Texts</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="storage-status">
+          <span class="status-dot"></span>
+          <span>Local Storage Active</span>
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" type="button">
+          <span>◐</span>
+          <span>Toggle Theme</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <header class="topbar">
+        <div class="topbar-heading">
+          <p class="breadcrumb">WOFBD / WALL MARIA</p>
+          <h2 id="page-title">Main GC Members</h2>
+
+          <div
+            id="app-status"
+            class="app-status"
+            data-state="loading"
+            role="status"
+          >
+            <span class="status-dot"></span>
+            Initializing local database...
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <button
+            id="export-button"
+            class="button secondary"
+            type="button"
+          >
+            <span>↓</span>
+            Export JSON
+          </button>
+
+          <button
+            id="import-button"
+            class="button secondary"
+            type="button"
+          >
+            <span>↑</span>
+            Import JSON
+          </button>
+
+          <input
+            id="import-file"
+            type="file"
+            accept=".json,application/json"
+            hidden
+          />
+        </div>
+      </header>
+
+      <div id="app-error" class="app-error" hidden>
+        <strong>Application initialization failed.</strong>
+        <span id="app-error-message"></span>
+      </div>
+
+      <section class="content-area">
+
+        <!-- Main GC Members -->
+        <section class="page-section active" id="page-members">
+
+          <div class="section-heading">
+            <div>
+              <span class="section-eyebrow">MEMBER MANAGEMENT</span>
+              <h3>Main GC Members</h3>
+              <p>
+                Manage recruitment information and member records.
+              </p>
+            </div>
+
+            <button
+              class="button primary"
+              id="add-member"
+              type="button"
+            >
+              <span>＋</span>
+              Add Member
+            </button>
+          </div>
+
+          <div class="toolbar member-toolbar">
+            <label class="search-control">
+              <span class="search-symbol">⌕</span>
+
+              <input
+                id="member-search"
+                class="search-input"
+                type="search"
+                placeholder="Search Facebook name, real name, skills..."
+                autocomplete="off"
+              />
+            </label>
+
+            <select id="squad-filter" class="filter-select">
+              <option value="">All Squads</option>
+            </select>
+
+            <select id="rank-filter" class="filter-select">
+              <option value="">All Ranks</option>
+            </select>
+
+            <span class="result-count" id="member-count">
+              0 members
+            </span>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="members-table">
+              <thead>
+                <tr>
+                  <th>FACEBOOK NAME</th>
+                  <th>REAL NAME</th>
+                  <th>RANK</th>
+                  <th>SQUAD</th>
+                  <th>SKILLS</th>
+                  <th>JOIN DATE</th>
+                  <th>FACEBOOK</th>
+                  <th class="actions-column">ACTIONS</th>
+                </tr>
+              </thead>
+
+              <tbody id="members-table"></tbody>
+            </table>
+
+            <div class="empty-state" id="members-empty" hidden>
+              <div class="empty-icon">♙</div>
+              <h4>No members found</h4>
+              <p>
+                Add a member or adjust your search and filters.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Higher Ranks -->
+        <section class="page-section" id="page-higher">
+
+          <div class="section-heading">
+            <div>
+              <span class="section-eyebrow">LEADERSHIP STRUCTURE</span>
+              <h3>Higher Ranks</h3>
+              <p>
+                Manage rank hierarchy and assign actual members as holders.
+              </p>
+            </div>
+
+            <button
+              class="button primary"
+              id="add-higher"
+              type="button"
+            >
+              <span>＋</span>
+              Add Rank
+            </button>
+          </div>
+
+          <div class="rank-toolbar">
+            <label class="search-control">
+              <span class="search-symbol">⌕</span>
+
+              <input
+                id="higher-search"
+                class="search-input"
+                type="search"
+                placeholder="Search higher ranks or holders..."
+                autocomplete="off"
+              />
+            </label>
+
+            <span class="result-count" id="higher-count">
+              0 ranks
+            </span>
+          </div>
+
+          <div class="rank-list" id="higher-list"></div>
+        </section>
+
+        <!-- Soldier Ranks -->
+        <section class="page-section" id="page-soldier">
+
+          <div class="section-heading">
+            <div>
+              <span class="section-eyebrow">SOLDIER STRUCTURE</span>
+              <h3>Soldier Ranks</h3>
+              <p>
+                Manage soldier progression and rank order.
+              </p>
+            </div>
+
+            <button
+              class="button primary"
+              id="add-soldier"
+              type="button"
+            >
+              <span>＋</span>
+              Add Rank
+            </button>
+          </div>
+
+          <div class="rank-toolbar">
+            <label class="search-control">
+              <span class="search-symbol">⌕</span>
+
+              <input
+                id="soldier-search"
+                class="search-input"
+                type="search"
+                placeholder="Search soldier ranks..."
+                autocomplete="off"
+              />
+            </label>
+
+            <span class="result-count" id="soldier-count">
+              0 ranks
+            </span>
+          </div>
+
+          <div class="rank-list" id="soldier-list"></div>
+        </section>
+
+        <!-- Copy-Paste Texts -->
+        <section class="page-section" id="page-texts">
+
+          <div class="section-heading">
+            <div>
+              <span class="section-eyebrow">MESSAGE LIBRARY</span>
+              <h3>Copy-Paste Texts</h3>
+              <p>
+                Organize reusable messages and announcements.
+              </p>
+            </div>
+
+            <button
+              class="button primary"
+              id="add-text"
+              type="button"
+            >
+              <span>＋</span>
+              Add Text
+            </button>
+          </div>
+
+          <div class="toolbar">
+            <label class="search-control">
+              <span class="search-symbol">⌕</span>
+
+              <input
+                id="text-search"
+                class="search-input"
+                type="search"
+                placeholder="Search titles, categories, or content..."
+                autocomplete="off"
+              />
+            </label>
+
+            <select id="text-category-filter" class="filter-select">
+              <option value="">All Categories</option>
+            </select>
+
+            <span class="result-count" id="text-count">
+              0 texts
+            </span>
+          </div>
+
+          <div class="text-grid" id="texts-list"></div>
+        </section>
+
+      </section>
+
+      <footer class="app-footer">
+        <span>WOFBD · Wall Maria</span>
+        <span>Personal Management Tool</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Generic Add/Edit Modal -->
+  <dialog id="editor-modal" class="editor-modal">
+    <form id="editor-form">
+
+      <div class="modal-header">
+        <div>
+          <span class="modal-eyebrow">WALL MARIA</span>
+          <h3 id="modal-title">Add Item</h3>
+        </div>
+
+        <button
+          type="button"
+          class="icon-button modal-close"
+          id="modal-close"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+
+      <div id="modal-fields" class="modal-fields"></div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="button secondary"
+          id="modal-cancel"
+        >
+          Cancel
+        </button>
+
+        <button type="submit" class="button primary">
+          Save Changes
+        </button>
+      </div>
+
+    </form>
+  </dialog>
+
+  <!-- Rank Holder Selection Modal -->
+  <dialog id="holder-modal" class="editor-modal holder-modal">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <div>
+          <span class="modal-eyebrow">RANK MANAGEMENT</span>
+          <h3>Assign Rank Holder</h3>
+          <p class="modal-description" id="holder-rank-name">
+            Select a Main GC member.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="icon-button"
+          id="holder-close"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+
+      <label class="search-control modal-search">
+        <span class="search-symbol">⌕</span>
+
+        <input
+          id="holder-search"
+          class="search-input"
+          type="search"
+          placeholder="Search Facebook name or real name..."
+          autocomplete="off"
+        />
+      </label>
+
+      <div
+        id="holder-candidates"
+        class="holder-candidates"
+      ></div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="button secondary"
+          id="holder-cancel"
+        >
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </dialog>
+
+  <!-- Member Profile Modal -->
+  <dialog id="details-modal" class="editor-modal details-modal">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <div>
+          <span class="modal-eyebrow">MEMBER PROFILE</span>
+          <h3 id="details-title">Member Details</h3>
+        </div>
+
+        <button
+          type="button"
+          class="icon-button"
+          id="details-close"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+
+      <div id="member-profile-content"></div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="button secondary"
+          id="details-edit"
+        >
+          Edit Member
+        </button>
+
+        <button
+          type="button"
+          class="button primary"
+          id="details-done"
+        >
+          Done
+        </button>
+      </div>
+
+    </div>
+  </dialog>
+
+  <!-- Confirmation Modal -->
+  <dialog id="confirm-modal" class="confirm-modal">
+    <form method="dialog">
+
+      <div class="confirm-icon">!</div>
+
+      <h3 id="confirm-title">Confirm Action</h3>
+
+      <p id="confirm-message">
+        Are you sure you want to continue?
+      </p>
+
+      <div class="modal-actions">
+        <button
+          type="submit"
+          value="cancel"
+          class="button secondary"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          value="confirm"
+          class="button danger-button"
+          id="confirm-submit"
+        >
+          Confirm
+        </button>
+      </div>
+
+    </form>
+  </dialog>
+
+  <!-- Toast Notifications -->
+  <div
+    id="toast-container"
+    class="toast-container"
+    aria-live="polite"
+    aria-atomic="false"
+  ></div>
+
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
